@@ -1,0 +1,4 @@
+setImageType('FLUORESCENCE');
+createSelectAllObject(true);
+runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImage": "Channel 3",  "backgroundRadius": 0.0,  "medianRadius": 1.0,  "sigma": 1.5,  "minArea": 20.0,  "maxArea": 100.0,  "threshold": 100.0,  "watershedPostProcess": true,  "cellExpansion": 5.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: Channel 1 max",  "thresholdPositive1": 2000.0,  "thresholdPositive2": 200.0,  "thresholdPositive3": 300.0,  "singleThreshold": true}');
+saveDetectionMeasurements('/F:/Dropbox (Cambridge University)/Artemisia/Aamir/Day 3-20191023T163847Z-001/Day 3/cell_quant/');
