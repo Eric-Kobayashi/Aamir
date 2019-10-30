@@ -10,7 +10,7 @@ import shutil as sh
 import sys
 
 # Path to image folder
-pa = r"F:\Dropbox (Cambridge University)\Artemisia\Aamir\Day 3-20191023T163847Z-001\Day 3\Green"
+pa = r"F:\Dropbox (Cambridge University)\Artemisia\Aamir\Day 3-20191023T163847Z-001\Day 4\Green"
 	
 def generate_comp(pa, f):
 	savedir = op.join(op.dirname(pa), "comps")
@@ -129,9 +129,9 @@ saveDetectionMeasurements(String.format('/{}/%s_det.txt', imagename));'''.format
 				print('QuPath progress: {0:.1f}%'.format(len(list_of_quant)*100.0/n_tif))
 		else: break
 
-	summary = op.join(op.dirname(pa), 'summary.csv')
+	summary = op.join(op.dirname(pa), op.basename(op.dirname(pa))+'.csv')
 	with open(summary, 'w') as s:
-		s.write("Image,Positive_cell,Negative_cell,Total_cell,Number_of_seeds\n")
+		s.write("Image,Positive_cell,Negative_cell,Total_cell,Positive_percentage,Number_of_seeds\n")
 		for r, q in list_of_quant:
 			pos = neg = 0
 			img_id = q.replace('_comp_det.txt', '')
@@ -141,7 +141,11 @@ saveDetectionMeasurements(String.format('/{}/%s_det.txt', imagename));'''.format
 						pos += 1
 					elif 'Negative' in lines[:20]:
 						neg += 1
-			s.write("{},{},{},{},{}\n".format(img_id, pos, neg, pos+neg, num_seeds_dict[img_id]))
+			cells = pos+neg
+			if cells == 0:
+				s.write("{},0,0,0,0,{}\n".format(img_id, num_seeds_dict[img_id]))
+			else:
+				s.write("{},{},{},{},{},{}\n".format(img_id, pos, neg, cells, pos*100.0/cells, num_seeds_dict[img_id]))
 
 
 if __name__ in ['__main__', '__builtin__']:
