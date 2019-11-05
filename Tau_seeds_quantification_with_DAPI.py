@@ -65,7 +65,7 @@ def extract_seeds(imgpath):
 	IJ.setBackgroundColor(bg_8bit, bg_8bit, bg_8bit)
 	imp.setDisplayRange(0, 65535)
 	nroi = rm.getCount()
-	if nroi >= 0:
+	if nroi == 0:
 		IJ.run(imp, "Select All", "")
 		IJ.run(imp, "Clear", "stack")
 	elif nroi == 1:
