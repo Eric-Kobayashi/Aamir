@@ -11,6 +11,8 @@ import sys
 
 # Path to image folder
 pa = r"F:\Dropbox (Cambridge University)\Artemisia\Aamir\Day3-DAPI"
+ch1a = 3   # pixel size
+ch1s = 125 # threshold
 	
 def combine_DAPI(pa):
 	List_of_tif = []
@@ -28,7 +30,7 @@ def combine_DAPI(pa):
 		green = op.join(r, f)
 		f_name = f.replace('.tif','').replace(' ','_')
 		dapi = op.join(r.replace('Tau', 'DAPI'), f.replace('Blue - FITC', 'UV - DAPI'))
-		assert op.isfile(dapi)
+		assert op.isfile(dapi), "Please check file names!"
 		imp, seeds_num = extract_seeds(green)
 		imp.setTitle("seeds")
 		imp.show()
@@ -52,14 +54,18 @@ def extract_seeds(imgpath):
 		rm = RoiManager()
 	rm.reset()
 	imp = IJ.openImage(imgpath)
-	IJ.run(imp, "Detect Particles", "  ch1a=3 ch1s=125 add=[All detections]")
+	IJ.redirectErrorMessages()
+	try:
+		IJ.run(imp, "Detect Particles", "  ch1a={} ch1s={} add=[All detections]".format(ch1a, ch1s))
+	except:
+		print("No particle detected in {}".format(imgpath))
 	ave_imp = ZProjector.run(imp, "avg")
 	stats = ave_imp.getStatistics(0x10000).median
 	bg_8bit = int(round(stats*1.0/256))
 	IJ.setBackgroundColor(bg_8bit, bg_8bit, bg_8bit)
 	imp.setDisplayRange(0, 65535)
 	nroi = rm.getCount()
-	if nroi == 0:
+	if nroi >= 0:
 		IJ.run(imp, "Select All", "")
 		IJ.run(imp, "Clear", "stack")
 	elif nroi == 1:
