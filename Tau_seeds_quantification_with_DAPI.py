@@ -6,7 +6,8 @@ from ij.plugin import Concatenator, ImageCalculator
 import time
 import os
 import os.path as op
-import shutil as sh
+import shutil as sh
+
 import sys
 
 # Path to image folder
@@ -29,7 +30,7 @@ def combine_DAPI(pa):
 	for r, f in List_of_tif:
 		green = op.join(r, f)
 		f_name = f.replace('.tif','').replace(' ','_')
-		dapi = op.join(r.replace('Tau', 'DAPI'), f.replace('Blue - FITC', 'UV - DAPI'))
+		dapi = op.join(op.dirname(r), op.basename(r).replace('Tau', 'DAPI'), f.replace('Blue - FITC', 'UV - DAPI'))
 		assert op.isfile(dapi), "Please check file names!"
 		imp, seeds_num = extract_seeds(green)
 		imp.setTitle("seeds")
