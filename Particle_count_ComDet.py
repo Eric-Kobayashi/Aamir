@@ -39,12 +39,13 @@ def analysis(pa, ch1a, ch1s):
 			IJ.redirectErrorMessages()
 			IJ.run(imp, "Detect Particles", "ch1a={} ch1s={} add=Nothing".format(ch1a, ch1s))
 		except:
-			with open(op.join(pa, "summary.csv"), 'w') as s:
+			with open(result_path, 'w') as s:
 				contents = "0\n"
 				s.write("{},{},{},{}".format(t.replace(".tif", ""), ch1a, ch1s, contents))
 		else:
 			IJ.selectWindow("Summary")
 			IJ.saveAs("text", result_path)
+			IJ.run("Close", "")
 
 		with open(op.join(pa, "particle_counts.csv"), 'a') as s:
 			with open(result_path, 'r') as rf:
