@@ -11,23 +11,28 @@ ch1s_arr = [40]
 def analysis(pa, ch1a, ch1s):
 	IJ.run("Close All", "")
 	List_of_images = []
+	flag = False
 	try:
-		for roots, dirs, files in os.walk(image_path):
+		for roots, dirs, files in os.walk(pa):
 			for f in files:
 				if f.endswith('.tif'):
 					List_of_images.append(op.join(roots, f))
 	except:
-		return
 		List_of_images = wm.getImageTitles()
+		flag = True
 							
 	List_of_results = []
 	for tit in List_of_images:
-		imp = IJ.openImage(op.join(roots, f))
 		IJ.run("Clear Results")
 		try:
-			imp = wm.getImage(tit)
+			if flag:
+				imp = wm.getImage(tit)
+			else:
+				imp = IJ.openImage(tit)
 		except:
+			print('No images detected!')
 			continue
+
 		try:
 			IJ.redirectErrorMessages()
 			IJ.run(imp, "Detect Particles", "ch1a={} ch1s={} add=Nothing".format(ch1a, ch1s))
