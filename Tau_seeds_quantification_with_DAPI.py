@@ -11,10 +11,30 @@ import shutil as sh
 import sys
 
 # Path to image folder
-pa = r"F:\Dropbox (Cambridge University)\Artemisia\Aamir\Day3-DAPI"
+pa = r"G:\My Drive\Aamir\Aamir_McEwan Lab_GDrive\Lab Book - Aamir\Tau_Venus_Costar_mice_Akis_Aamir_1\Test"
 ch1a = 3   # pixel size
-ch1s = 125 # threshold
+ch1s = 600 # threshold
+
+
+def classify_folder(pa):
+	L_tau = []
+	L_dapi = []
+	for roots, dirs, files in os.walk(pa):
+		for f in files:
+			if 'Blue - FITC' in f:
+				L_tau.append(op.join(roots, f))
+			elif 'UV - DAPI' in f:
+				L_dapi.append(op.join(roots, f))
+	try:
+		assert not op.isdir(op.join(pa, 'Tau'))
+		os.makedirs(op.join(pa, 'Tau'))
+		os.makedirs(op.join(pa, 'DAPI'))
+		for t in L_tau: os.rename(t, op.join(pa, 'Tau', op.basename(t)))
+		for t in L_dapi: os.rename(t, op.join(pa, 'DAPI', op.basename(t)))
+	except:
+		pass
 	
+
 def combine_DAPI(pa):
 	List_of_tif = []
 	savedir = op.join(pa, "comps")
@@ -115,9 +135,9 @@ saveDetectionMeasurements(String.format('/{}/%s_det.txt', imagename));'''.format
 			img_id = q.replace('_comp_det.txt', '')
 			with open(op.join(r, q), 'r') as quant:
 				for lines in quant:
-					if 'Positive' in lines[:20]:
+					if 'Positive' in lines.split('\t')[1]:
 						pos += 1
-					elif 'Negative' in lines[:20]:
+					elif 'Negative' in lines.split('\t')[1]:
 						neg += 1
 			cells = pos+neg
 			if cells == 0:
@@ -125,7 +145,12 @@ saveDetectionMeasurements(String.format('/{}/%s_det.txt', imagename));'''.format
 			else:
 				s.write("{},{},{},{},{},{}\n".format(img_id, pos, neg, cells, pos*100.0/cells, num_seeds_dict[img_id]))
 
+	# remove QuPath detection results
+	for r, d in list_of_quant:
+		os.remove(op.join(r, d))
+
 if __name__ in ['__main__', '__builtin__']:
+	classify_folder(pa)
 	seeds, n = combine_DAPI(pa)
 	# Do qupath cell identification and save summary
 	generate_sum(pa, n, seeds)
